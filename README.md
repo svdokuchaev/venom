@@ -19,4 +19,5 @@ Inside Kdenlive: How to fuzz a complex GUI application? - https://kdenlive.org/e
 Monkey Testing - Android Studio - https://developer.android.com/studio/test/monkey  
 Detecting the unexpected in (Web) UI - https://medium.com/criteo-labs/detecting-the-unexpected-in-web-ui-fuzzing-1f3822c8a3a5  
 Онлайн сервис для фаззинга веб интерфейса: https://monkeytest.it/  
+CrawlJax - https://github.com/crawljax/crawljax  
 
