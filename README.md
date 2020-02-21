@@ -5,6 +5,7 @@
 -----------------
 
 Алексей Родионов — Тестирование на основе сетей Петри: https://www.youtube.com/watch?v=TeKHZw61pb8
+Про TLA+ одной картинкой: https://medium.com/@Ladicle/tla-video-course-is-great-6f1054195cde  
 Hypothesis - инструмент для тестирования на основе свойств: https://hypothesis.works/products/
 
 Фаззинг тестирование
