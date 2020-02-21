@@ -1,5 +1,5 @@
-# venom
-Experimental frontend fuzzing project
+# Фаззинг веб-интерфейса
+Презентация: https://docs.google.com/presentation/d/18X1ZFceAQAKpf-5DW9FsX7dAhHf0TQbiEQ7LlUbqAsk/edit?usp=sharing
 
 Формальные методы
 -----------------
