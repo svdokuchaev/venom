@@ -1,42 +1,96 @@
-# Реализация бота, который передвигается между состояниями приложения
+# Р РµР°Р»РёР·Р°С†РёСЏ Р±РѕС‚Р°, РєРѕС‚РѕСЂС‹Р№ РїСЂРѕРІРѕРґРёС‚ РёСЃСЃР»РµРґРѕРІР°С‚РµР»СЊСЃРєРѕРµ С‚РµСЃС‚РёСЂРѕРІР°РЅРёРµ РїСЂРёР»РѕР¶РµРЅРёСЏ
 # TODO:
-#   > реализовать получение списка элементов через getEventListeners (ищем элементы, которые в 
-#     теории отреагируют на наше действие)
-#   > реализовать получение списка элементов через свойство is_displayed
-#   > надёжное обращение к отдельному элементу через его локатор
-#   > добавить обработку исключений при "протухании" элемента
-#   > фильтровать однотонные элементы
-#   > отключать таймеры и клиентские события на странице, что бы не было искажений состояний
-#   > реализовать механизм самодиагностики (e.g. анализ скриншота всей страницы), что бы видеть,
-#     когда фильтры убирают элементы, которые не следовало убирать
-#   > написать юнит-тесты через тестовые страницы
-#   > реализовать аутентификацию через POST запросы
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ РєР»Р°СЃСЃ С„РёР»СЊС‚СЂРѕРІ
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ РїРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° СЌР»РµРјРµРЅС‚РѕРІ С‡РµСЂРµР· getEventListeners (РёС‰РµРј СЌР»РµРјРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РІ
+#     С‚РµРѕСЂРёРё РѕС‚СЂРµР°РіРёСЂСѓСЋС‚ РЅР° РЅР°С€Рµ РґРµР№СЃС‚РІРёРµ)
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ РїРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° СЌР»РµРјРµРЅС‚РѕРІ С‡РµСЂРµР· СЃРІРѕР№СЃС‚РІРѕ is_displayed
+#   > РЅР°РґС‘Р¶РЅРѕРµ РѕР±СЂР°С‰РµРЅРёРµ Рє РѕС‚РґРµР»СЊРЅРѕРјСѓ СЌР»РµРјРµРЅС‚Сѓ С‡РµСЂРµР· РµРіРѕ Р»РѕРєР°С‚РѕСЂ
+#   > РґРѕР±Р°РІРёС‚СЊ РѕР±СЂР°Р±РѕС‚РєСѓ РёСЃРєР»СЋС‡РµРЅРёР№ РїСЂРё "РїСЂРѕС‚СѓС…Р°РЅРёРё" СЌР»РµРјРµРЅС‚Р°
+#   > С„РёР»СЊС‚СЂРѕРІР°С‚СЊ РѕРґРЅРѕС‚РѕРЅРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹
+#   > РѕС‚РєР»СЋС‡Р°С‚СЊ С‚Р°Р№РјРµСЂС‹ Рё РєР»РёРµРЅС‚СЃРєРёРµ СЃРѕР±С‹С‚РёСЏ РЅР° СЃС‚СЂР°РЅРёС†Рµ, С‡С‚Рѕ Р±С‹ РЅРµ Р±С‹Р»Рѕ РёСЃРєР°Р¶РµРЅРёР№ СЃРѕСЃС‚РѕСЏРЅРёР№
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ РјРµС…Р°РЅРёР·Рј СЃР°РјРѕРґРёР°РіРЅРѕСЃС‚РёРєРё (e.g. Р°РЅР°Р»РёР· СЃРєСЂРёРЅС€РѕС‚Р° РІСЃРµР№ СЃС‚СЂР°РЅРёС†С‹), С‡С‚Рѕ Р±С‹ РІРёРґРµС‚СЊ,
+#     РєРѕРіРґР° С„РёР»СЊС‚СЂС‹ СѓР±РёСЂР°СЋС‚ СЌР»РµРјРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РЅРµ СЃР»РµРґРѕРІР°Р»Рѕ СѓР±РёСЂР°С‚СЊ
+#   > РЅР°РїРёСЃР°С‚СЊ СЋРЅРёС‚-С‚РµСЃС‚С‹ С‡РµСЂРµР· С‚РµСЃС‚РѕРІС‹Рµ СЃС‚СЂР°РЅРёС†С‹
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёСЋ С‡РµСЂРµР· POST Р·Р°РїСЂРѕСЃС‹
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ Р·Р°РєСЂС‹С‚РёРµ Р»РёС€РЅРёС… РѕРєРѕРЅ
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ С„РёР»СЊС‚СЂ РґР»СЏ СЌР»РµРјРµРЅС‚РѕРІ - СѓР±РёСЂР°С‚СЊ СЌР»РµРјРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РЅРµ РІРёРґРЅС‹ (РєРѕРѕСЂРґРёРЅР°С‚С‹ Р±РѕР»СЊС€РёРµ)
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ РїСЂРѕРІРµСЂРєСѓ РёРЅС‚РµСЂР°РєС‚РёРІРЅРѕСЃС‚Рё СЌР»РµРјРµРЅС‚Р° РїРѕ РЅР°РІРµРґРµРЅРёСЋ РЅР° РЅРµРіРѕ
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РјРµС‚РѕРґ РґР»СЏ РґР°РјРїР° С‚РµРєСѓС‰РµРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ (localstorage, СЃРєСЂРёРЅС€РѕС‚, etc.)
+#   > СЂРµР°Р»РёР·РѕРІР°С‚СЊ С„РёР»СЊС‚СЂ РЅРµРґРѕСЃС‚СѓРїРЅС‹С… РјРµС‚РѕРґРѕРІ РІ Р·Р°С‚РµРјРЅРµРЅРёРё (e.g. z-index)
+#   > РґР»СЏ СЃРёС‚СѓР°С†РёР№, РєРѕРіРґР° С‡С‚Рѕ-С‚Рѕ РёРґС‘С‚ РЅРµ С‚Р°Рє (e.g. СЌР»РµРјРµРЅС‚ РЅРµ РєР»РёРєР°РµС‚СЃСЏ) СЂРµР°Р»РёР·РѕРІР°С‚СЊ РјРµС…Р°РЅРёР·Рј СЃРѕС…СЂР°РЅРµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРёСЏ РґР»СЏ
+#     РїРѕСЃР»РµРґСѓСЋС‰РµРіРѕ Р°РЅР°Р»РёР·Р° СЃРёС‚СѓР°С†РёРё
 
-from selenium import webdriver
 from element import Element
+from terminal import *
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import time
+import random, string
+
+
+def randomword(length):
+   letters = string.ascii_lowercase
+   return ''.join(random.choice(letters) for i in range(length))
 
 
 class Bot:
-    def __init__(self, url):
-        """Тут передаются настройки и выполняется инициализация бота"""
-        self.driver = webdriver.Chrome()
+    def __init__(self, url, auth=True):
+        """РўСѓС‚ РїРµСЂРµРґР°СЋС‚СЃСЏ РЅР°СЃС‚СЂРѕР№РєРё Рё РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р±РѕС‚Р°"""
+        chrome_options = Options()
+        # chrome_options.add_argument("--disable-extensions")
+        # chrome_options.add_argument("--disable-gpu")
+        # chrome_options.add_argument("--no-sandbox) # linux only
+        # chrome_options.add_argument("--headless")
+        self.driver = webdriver.Chrome('chromedriver/chromedriver', options=chrome_options)
         self.driver.get(url)
-        time.sleep(5)
-        self.driver.find_element_by_css_selector("[name='auth-loginForm_login'] input").send_keys("Демо_тензор")
-        self.driver.find_element_by_css_selector("[name='auth-loginForm_password'] input").send_keys("Демо123")
+        if auth:
+            self.auth()
+
+    def wait(self, n=1):
+        """Р–РґС‘Рј РєРѕРіРґР° Р·Р°РєРѕРЅС‡РёС‚СЃСЏ РІСЃСЏ 'РґРІРёР¶СѓС…Р°' РїРѕСЃР»Рµ РЅР°С€РёС… РґРµР№СЃС‚РІРёР№ Рё СЃС‚СЂР°РЅРёС†Р° РїРµСЂРµР№РґС‘С‚ РІ
+        РЅРѕРІРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ"""
+        command = """var performance = window.performance || 
+                                       window.mozPerformance || 
+                                       window.msPerformance || 
+                                       window.webkitPerformance || 
+                                       {}; 
+                    var network = performance.getEntries() || 
+                    {}; 
+                    return network;"""
+        prev_reqs = 0
+        while True:
+            # TODO: РџРѕ РєР°РєРѕР№-С‚Рѕ РїСЂРёС‡РёРЅРµ СѓРјРёСЂР°РµС‚ chromedriver РІ СЌС‚РѕРј РјРµСЃС‚Рµ РїСЂРё СЂР°Р±РѕС‚Рµ СЃ google.com Рё yandex.ru
+            current_reqs = len(self.driver.execute_script(command))
+            if current_reqs - prev_reqs < 5:
+                break
+            else:
+                prev_reqs = current_reqs
+            time.sleep(2)
+        time.sleep(n)
+        if len(self.driver.window_handles) > 1:
+            self.driver.switch_to.window(self.driver.window_handles[-1])
+            
+    def auth(self):
+        self.wait(1)
+        self.driver.find_element_by_css_selector("[name='auth-loginForm_login'] input").send_keys("Р”РµРјРѕ_С‚РµРЅР·РѕСЂ")
+        self.driver.find_element_by_css_selector("[name='auth-loginForm_password'] input").send_keys("Р”РµРјРѕ123")
         self.driver.find_element_by_css_selector("button.auth-Form__submit").click()
-        time.sleep(10)   
+        self.wait(2)   
+
     def get_elements(self):
-        """Механизм генерации списка элементов, с которыми можно взаимодействовать на странице"""
+        """РњРµС…Р°РЅРёР·Рј РіРµРЅРµСЂР°С†РёРё СЃРїРёСЃРєР° СЌР»РµРјРµРЅС‚РѕРІ, СЃ РєРѕС‚РѕСЂС‹РјРё РјРѕР¶РЅРѕ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРѕРІР°С‚СЊ РЅР° СЃС‚СЂР°РЅРёС†Рµ"""
+        
         driver = self.driver
+        log_start('Get elements: ')
         elements = driver.find_elements_by_xpath("//*")
-        elements = [Element(elm) for elm in elements]
-        print('Текущее число элементов: %s' % len(elements))
-        elements = [element for element in elements if not rect.invalid]
-        print('Текущее число элементов: %s' % len(elements))
-        time.sleep(5)
-        # Фильтр #1: узнаём какие элементы визуально лежат внутри других
+        elements = [Element(driver, elm) for elm in elements]
+        log_add('({0}) -> '.format(len(elements)))
+        elements = [element for element in elements if not element.invalid]
+        log_add('({0}) -> '.format(len(elements)))
+        # self.wait()
+        # Р¤РёР»СЊС‚СЂ #1: СѓР±РёСЂР°РµРј РјРµР»РєРёРµ СЌР»РµРјРµРЅС‚С‹, РїРѕ РєРѕС‚РѕСЂС‹Рј СЃР»РѕР¶РЅРѕ РєР»РёРєРЅСѓС‚СЊ
+        elements = [elm for elm in elements if elm.width >= 6 and elm.height >= 6]
+        # Р¤РёР»СЊС‚СЂ #2: СѓР·РЅР°С‘Рј РєР°РєРёРµ СЌР»РµРјРµРЅС‚С‹ РІРёР·СѓР°Р»СЊРЅРѕ Р»РµР¶Р°С‚ РІРЅСѓС‚СЂРё РґСЂСѓРіРёС…
         for elm in elements:
             for other_elm in elements:
                 if (elm.x <= other_elm.x) and \
@@ -44,7 +98,8 @@ class Bot:
                    (elm.x + elm.width >= other_elm.x + other_elm.width) and \
                    (elm.y + elm.height >= other_elm.y + other_elm.height):
                     elm.childs.append(other_elm)
-        # Фильтр #2: убираем одинаковые по размерам и положению элементы
+        log_add('({0}) -> '.format(len(elements)))
+        # Р¤РёР»СЊС‚СЂ #3: СѓР±РёСЂР°РµРј РѕРґРёРЅР°РєРѕРІС‹Рµ РїРѕ СЂР°Р·РјРµСЂР°Рј Рё РїРѕР»РѕР¶РµРЅРёСЋ СЌР»РµРјРµРЅС‚С‹
         for elm in elements:
             if len(elm.childs) < 2:
                 continue
@@ -57,10 +112,50 @@ class Bot:
                     if child != elm:
                         elements.remove(child)
                 elm.childs = ['same']
-        # Фильтр #3: убираем элементы, которые содержат в себе другие элементы
+        log_add('({0}) -> '.format(len(elements)))
+        # Р¤РёР»СЊС‚СЂ #4: СѓР±РёСЂР°РµРј СЌР»РµРјРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ СЃРѕРґРµСЂР¶Р°С‚ РІ СЃРµР±Рµ РґСЂСѓРіРёРµ СЌР»РµРјРµРЅС‚С‹
         elements = [elm for elm in elements if len(elm.childs) == 1]
-        # Фильтр #4: убираем мелкие элементы, по которым сложно кликнуть    
-        elements = [elm for elm in elements if elm.width*elm.height >= 200 
-                                               and elm.width >= 7 
-                                               and elm.height >= 7]
+        log_add('({0}) -> '.format(len(elements)))
+        # Р¤РёР»СЊС‚СЂ #5: РЈР±РёСЂР°РµРј РЅРµРІРёРґРёРјС‹Рµ СЌРµР»РјРµРЅС‚С‹    
+        elements = [elm for elm in elements if elm.is_displayed()]
+        log_add('({0}) -> '.format(len(elements)))
+        # Р¤РёР»СЊС‚СЂ #6: РЈР±РёСЂР°РµРј СЌР»РµРјРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РЅР°С…РѕРґСЏС‚СЃСЏ РЅРёР¶Рµ РЅРёР¶РЅРµР№ РіСЂР°РЅРёС†С‹ РѕРєРЅР°
+        window_height = driver.execute_script('return document.documentElement.clientHeight')
+        elements = [elm for elm in elements if elm.y < window_height]
+        log_add('({0})'.format(len(elements)))
+        log_end()
         return elements
+    
+    def move_to(self, url):
+        self.driver.execute_script('localStorage.clear()')
+        self.driver.get(url)
+        self.wait()
+        # Р•СЃР»Рё СЃРµСЃСЃРёСЏ Р±С‹Р»Р° Р·Р°РІРµСЂС€РµРЅР° - Р·Р°С…РѕРґРёРј Р·Р°РЅРѕРІРѕ
+        # if '/auth/' in self.driver.current_url:
+        #     self.auth()
+
+    def move_by_path(self, path):
+        """РС‚РµСЂР°С‚РёРІРЅРѕ РїСЂРѕРєР»РёРєРёРІР°РµРј СЃРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ"""
+        for elm in path:
+            if 'input' in elm.xpath or 'input' in elm.get_innerHTML():
+                # elm.input(f'{randomword(10)}\n')
+                elm.input(f'Test!!!\n')
+            else:
+                elm.click()
+            self.wait()
+
+    def kill(self):
+        self.driver.close()
+
+    def current_url(self):
+        return self.driver.current_url
+
+    def get_screenshot(self):
+        return self.driver.get_screenshot_as_png()
+
+    def close_all_windows(self):
+        if len(self.driver.window_handles) > 1:
+            for w in self.driver.window_handles[1:]:
+                self.driver.switch_to.window(w)
+                self.driver.close()
+            self.driver.switch_to.window(self.driver.window_handles[0])
